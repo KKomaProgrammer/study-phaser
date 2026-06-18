@@ -10,87 +10,166 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#">
+    <a class="brand" href="#" aria-label="Phaser Step Lab 홈">
       <span class="brand-mark">P</span>
-      <span><strong>Phaser Step Lab</strong><small>단계별 Phaser 실습 강좌</small></span>
+      <span class="brand-copy">
+        <strong>Phaser Step Lab</strong>
+        <small>단계별 Phaser 실습 강좌</small>
+      </span>
     </a>
+
     <div class="top-actions">
       <div class="progress-pill" aria-live="polite">
-        <span id="progressText">0% 완료</span>
-        <span class="progress-track"><span id="progressFill"></span></span>
+        <div class="progress-info">
+          <span>학습 진행도</span>
+          <strong id="progressText">0% 완료</strong>
+        </div>
+        <span class="progress-track">
+          <span id="progressFill"></span>
+        </span>
       </div>
-      <button id="themeToggle" class="icon-button" type="button">☀️ Light</button>
+      <button id="themeToggle" class="icon-button" type="button" aria-label="테마 변경">
+        ☀️ Light
+      </button>
     </div>
   </header>
 
-  <main class="layout">
-    <aside class="sidebar">
-      <div class="side-head">
-        <h1>강좌 목록</h1>
-        <p>기초 → 입력 → 물리 → 충돌 → 카메라 → 완성 게임 순서로 진행합니다.</p>
+  <main class="app-shell">
+    <section class="hero-card reveal-up">
+      <div>
+        <p class="eyebrow">PHASER ROADMAP</p>
+        <h1>Phaser를 읽고, 고치고, 바로 실행하면서 배웁니다.</h1>
+        <p class="hero-desc">
+          불필요한 설명은 줄이고, 실제 게임 제작에 필요한 구조만 단계별로 익힙니다.
+          예제 코드는 보기 좋게 정렬되어 있으며 Monaco Editor에서 바로 수정할 수 있습니다.
+        </p>
       </div>
-      <label class="search-box">
-        <span>검색</span>
-        <input id="lessonSearch" type="search" placeholder="scene, physics, input..." />
-      </label>
-      <div id="lessonList" class="lesson-list"></div>
-      <button id="resetProgress" class="ghost-button" type="button">진행도 초기화</button>
-    </aside>
-
-    <section class="content-panel">
-      <nav class="crumb" id="lessonCrumb">01 · start</nav>
-      <article class="lesson-card">
-        <div class="lesson-title-row">
-          <div>
-            <p class="eyebrow" id="lessonLevel">STEP</p>
-            <h2 id="lessonTitle">불러오는 중...</h2>
-          </div>
-          <button id="completeLesson" class="primary-button" type="button">이 단계 완료</button>
-        </div>
-        <div id="lessonBody" class="lesson-body"></div>
-        <section class="check-card">
-          <h3>체크포인트</h3>
-          <ul id="checkList"></ul>
-        </section>
-      </article>
-    </section>
-
-    <section class="lab-panel">
-      <div class="editor-toolbar">
+      <div class="hero-stats" aria-label="사이트 주요 기능">
         <div>
-          <h2>Monaco Editor 실습</h2>
-          <p>강좌 코드를 수정하고 Phaser 미리보기 또는 Node.js 실행을 눌러 확인합니다.</p>
+          <strong>7</strong>
+          <span>학습 단계</span>
         </div>
-        <div class="toolbar-actions">
-          <button id="copyCode" class="ghost-button" type="button">복사</button>
-          <button id="restoreCode" class="ghost-button" type="button">예제 복원</button>
+        <div>
+          <strong>2</strong>
+          <span>실행 방식</span>
         </div>
-      </div>
-
-      <div id="editor" class="editor"></div>
-
-      <details class="stdin-box">
-        <summary>Node.js stdin 입력값</summary>
-        <textarea id="stdinInput" spellcheck="false" placeholder="Node.js 예제에서 입력값이 필요할 때 사용"></textarea>
-      </details>
-
-      <div class="run-row">
-        <button id="previewButton" class="primary-button" type="button">Phaser 미리보기</button>
-        <button id="runNodeButton" class="secondary-button" type="button">Node.js로 실행</button>
-      </div>
-
-      <div class="result-grid">
-        <section class="preview-card">
-          <div class="result-head"><h3>브라우저 미리보기</h3><button id="reloadPreview" class="ghost-button small" type="button">다시 실행</button></div>
-          <iframe id="previewFrame" title="Phaser 미리보기" sandbox="allow-scripts"></iframe>
-        </section>
-        <section class="output-card">
-          <div class="result-head"><h3>Node.js 출력</h3><span id="runStatus" class="status-text">대기 중</span></div>
-          <pre id="nodeOutput">Node.js 실행 결과가 여기에 표시됩니다.</pre>
-        </section>
+        <div>
+          <strong>100%</strong>
+          <span>저장형 진행도</span>
+        </div>
       </div>
     </section>
+
+    <div class="workspace">
+      <aside class="sidebar reveal-up">
+        <div class="side-head">
+          <p class="eyebrow">LESSONS</p>
+          <h2>강좌 목록</h2>
+          <p>기초 → 입력 → 물리 → 충돌 → 카메라 → 완성 게임 순서로 진행합니다.</p>
+        </div>
+
+        <label class="search-box">
+          <span>검색</span>
+          <input id="lessonSearch" type="search" placeholder="scene, physics, input..." />
+        </label>
+
+        <div id="lessonList" class="lesson-list"></div>
+
+        <button id="resetProgress" class="ghost-button wide" type="button">
+          진행도 초기화
+        </button>
+      </aside>
+
+      <section class="main-stack">
+        <article class="lesson-card reveal-up">
+          <nav class="crumb" id="lessonCrumb">01 · start</nav>
+
+          <div class="lesson-title-row">
+            <div>
+              <p class="eyebrow" id="lessonLevel">STEP</p>
+              <h2 id="lessonTitle">불러오는 중...</h2>
+            </div>
+            <button id="completeLesson" class="primary-button" type="button">
+              이 단계 완료
+            </button>
+          </div>
+
+          <div id="lessonBody" class="lesson-body"></div>
+
+          <section class="check-card">
+            <h3>체크포인트</h3>
+            <ul id="checkList"></ul>
+          </section>
+        </article>
+
+        <section class="lab-card reveal-up">
+          <div class="lab-head">
+            <div>
+              <p class="eyebrow">PRACTICE</p>
+              <h2>Monaco Editor 실습</h2>
+              <p>강좌 코드를 수정하고 Phaser 미리보기 또는 Node.js 실행으로 바로 확인합니다.</p>
+            </div>
+            <div class="toolbar-actions">
+              <button id="copyCode" class="ghost-button" type="button">복사</button>
+              <button id="restoreCode" class="ghost-button" type="button">예제 복원</button>
+            </div>
+          </div>
+
+          <div class="lab-grid">
+            <div class="editor-column">
+              <div id="editor" class="editor"></div>
+
+              <details class="stdin-box">
+                <summary>Node.js stdin 입력값</summary>
+                <textarea id="stdinInput" spellcheck="false" placeholder="Node.js 예제에서 입력값이 필요할 때 사용"></textarea>
+              </details>
+
+              <div class="run-row">
+                <button id="previewButton" class="primary-button" type="button">Phaser 미리보기</button>
+                <button id="runNodeButton" class="secondary-button" type="button">Node.js로 실행</button>
+              </div>
+
+              <section class="output-card">
+                <div class="result-head">
+                  <h3>Node.js 출력</h3>
+                  <span id="runStatus" class="status-text">대기 중</span>
+                </div>
+                <pre id="nodeOutput">Node.js 실행 결과가 여기에 표시됩니다.</pre>
+              </section>
+            </div>
+
+            <section class="preview-card">
+              <div class="result-head">
+                <h3>브라우저 미리보기</h3>
+                <div class="preview-actions">
+                  <button id="reloadPreview" class="ghost-button small" type="button">다시 실행</button>
+                  <button id="fullscreenPreviewButton" class="ghost-button small" type="button">전체화면</button>
+                </div>
+              </div>
+              <iframe id="previewFrame" title="Phaser 미리보기" sandbox="allow-scripts"></iframe>
+            </section>
+          </div>
+        </section>
+      </section>
+    </div>
   </main>
+
+  <div id="fullscreenPreview" class="preview-modal" aria-hidden="true">
+    <div class="preview-modal-backdrop" data-close-preview></div>
+    <section class="preview-modal-card" role="dialog" aria-modal="true" aria-label="브라우저 미리보기 전체화면">
+      <header class="preview-modal-head">
+        <div>
+          <p class="eyebrow">FULL PREVIEW</p>
+          <h2>브라우저 미리보기</h2>
+        </div>
+        <div class="preview-actions">
+          <button id="rerunFullscreenPreview" class="ghost-button small" type="button">다시 실행</button>
+          <button id="closeFullscreenPreview" class="icon-button" type="button" aria-label="전체화면 닫기">✕</button>
+        </div>
+      </header>
+      <iframe id="fullscreenFrame" title="전체화면 Phaser 미리보기" sandbox="allow-scripts"></iframe>
+    </section>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
   <script src="./js/app.js" defer></script>
