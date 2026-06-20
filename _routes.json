@@ -1,15 +1,9 @@
 {
   "version": 1,
   "include": [
-    "/docs",
-    "/run",
-    "/run-node",
-    "/search"
+    "/api/docs",
+    "/api/search",
+    "/api/run-node"
   ],
-  "exclude": [
-    "/css/*",
-    "/js/*",
-    "/favicon.ico",
-    "/_routes.json"
-  ]
+  "exclude": []
 }
