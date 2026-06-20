@@ -2,8 +2,7 @@
   "version": 1,
   "include": [
     "/api/docs",
-    "/api/search",
-    "/api/run-node"
+    "/api/search"
   ],
   "exclude": []
 }
