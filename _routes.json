@@ -1,7 +1,10 @@
 {
   "version": 1,
   "include": [
-    "/api/*"
+    "/docs",
+    "/run",
+    "/run-node",
+    "/search"
   ],
   "exclude": [
     "/css/*",
