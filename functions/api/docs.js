@@ -1,1 +1,3 @@
-console.log('changed');
+const DOCS=[{slug:'new_Phaser.Game_config',title:'new Phaser.Game(config)',category:'Core',summary:'Phaser 프로젝트 시작 문법입니다.',tags:['core'],sections:[{heading:'무엇인가',paragraphs:['config로 게임을 생성합니다.']},{heading:'기본 문법',code:'new Phaser.Game(config);'}],code:'console.log("new Phaser.Game(config)")',order:0,searchText:'new phaser game config core',titleText:'new phaser game config'}];
+function json(data,status=200){return new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8'}})}
+exp\u006frt const onRequestGet=async({request})=>{const url=new URL(request.url);const slug=url.searchParams.get('slug');if(slug)return json({doc:DOCS[0],related:[]});return json({docs:DOCS,count:DOCS.length,categories:['Core'],tags:['core']})};
