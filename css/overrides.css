@@ -1,0 +1,56 @@
+.doc-tags,
+.result-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.doc-tags .badge,
+.doc-tags .tiny-tag,
+.result-meta .badge,
+.result-meta .tiny-tag {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.doc-tags::-webkit-scrollbar,
+.result-meta::-webkit-scrollbar {
+  height: 6px;
+}
+
+.doc-tags::-webkit-scrollbar-thumb,
+.result-meta::-webkit-scrollbar-thumb {
+  background: #c8d6ea;
+  border-radius: 999px;
+}
+
+.code-block,
+.output-pre,
+.editor-fallback {
+  tab-size: 2;
+  white-space: pre;
+  line-height: 1.62;
+}
+
+.code-block code {
+  display: block;
+  white-space: pre;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+.editor-frame {
+  min-height: 240px;
+}
+
+.monaco-editor,
+.monaco-editor-background,
+.monaco-editor .inputarea.ime-input {
+  font-feature-settings: "liga" 0;
+}
