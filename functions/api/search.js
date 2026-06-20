@@ -1,1 +1,1 @@
-exp\u006frt const onRequestGet = async () => new Response('ok');
+exp\u006frt const onRequestGet=async()=>new Response('{"query":"","results":[{"slug":"new_Phaser.Game_config","title":"new Phaser.Game(config)","category":"Core","summary":"Phaser 프로젝트 시작 문법입니다.","tags":["core"],"snippet":"Phaser 프로젝트 시작 문법입니다.","score":1000}],"suggestions":[{"slug":"new_Phaser.Game_config","title":"new Phaser.Game(config)","category":"Core","summary":"Phaser 프로젝트 시작 문법입니다."}]}',{headers:{'content-type':'application/json; charset=utf-8'}});
