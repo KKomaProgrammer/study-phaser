@@ -1,97 +1,59 @@
-const INDENT = '  ';
-const KEYWORDS = new Set(['if', 'for', 'while', 'switch', 'catch', 'function']);
-
-function maskStrings(source) {
-  const store = [];
-  const text = source.replace(/`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*"/g, match => {
-    const key = `__STR_${store.length}__`;
-    store.push(match);
-    return key;
-  });
-  return { text, store };
+function isHtml(text) {
+  return /^\s*<!doctype html>/i.test(text || '') || /^\s*<html[\s>]/i.test(text || '');
 }
 
-function unmaskStrings(source, store) {
-  return source.replace(/__STR_(\d+)__/g, (_, i) => store[Number(i)] ?? '');
-}
+function prettyCode(text) {
+  text = String(text || '').trim();
+  if (!text || isHtml(text)) return text;
 
-function readableJavaScript(source) {
-  if (!source || source.includes('\n  ') || source.split('\n').length > 6) return source.trim();
-  const { text, store } = maskStrings(source.trim());
-  let out = '';
-  let depth = 0;
-  let token = '';
-
-  function pushToken() {
-    if (!token.trim()) return;
-    const trimmed = token.trim();
-    if (out && !out.endsWith('\n') && !out.endsWith(' ')) out += ' ';
-    out += trimmed;
-    token = '';
-  }
-
-  function newline(extra = 0) {
-    out = out.replace(/[ \t]+$/g, '');
-    if (!out.endsWith('\n')) out += '\n';
-    out += INDENT.repeat(Math.max(0, depth + extra));
-  }
-
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    const prevWord = token.trim().split(/\s+/).pop() || '';
-
-    if (ch === '{') {
-      pushToken();
-      out = out.replace(/[ \t]+$/g, '');
-      out += ' {';
-      depth++;
-      newline();
-    } else if (ch === '}') {
-      pushToken();
-      depth = Math.max(0, depth - 1);
-      newline();
-      out = out.replace(/[ \t]+$/g, '') + '}';
-      if (text[i + 1] !== ';' && text[i + 1] !== ',' && text[i + 1] !== ')' && text[i + 1] !== '}') newline();
-    } else if (ch === ';') {
-      pushToken();
-      out += ';';
-      newline();
-    } else if (ch === ',') {
-      pushToken();
-      out += ',';
-      if (depth > 0) newline();
-      else out += ' ';
-    } else if (ch === '(') {
-      token += ch;
-      if (KEYWORDS.has(prevWord)) token = token.replace(/\s*\($/, ' (');
-    } else {
-      token += ch;
-    }
-  }
-  pushToken();
-  return unmaskStrings(out, store)
-    .split('\n')
-    .map(line => line.replace(/[ \t]+$/g, ''))
-    .join('\n')
+  let out = text
+    .replace(/\s+/g, ' ')
+    .replace(/\s*\{\s*/g, ' {\n')
+    .replace(/\s*\}\s*/g, '\n}\n')
+    .replace(/;\s*/g, ';\n')
+    .replace(/,\s*/g, ',\n')
+    .replace(/\)\s*function/g, ')\nfunction')
+    .replace(/\)\s*if/g, ')\nif')
+    .replace(/\)\s*for/g, ')\nfor')
+    .replace(/\)\s*while/g, ')\nwhile')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  const lines = out.split('\n');
+  let depth = 0;
+  out = lines.map(raw => {
+    let line = raw.trim();
+    if (!line) return '';
+    if (line.startsWith('}')) depth = Math.max(0, depth - 1);
+    const indented = '  '.repeat(depth) + line;
+    if (line.endsWith('{')) depth++;
+    return indented;
+  }).join('\n');
+
+  return out.replace(/\n{3,}/g, '\n\n').trim();
 }
 
-function formatVisibleExamples(root = document) {
-  root.querySelectorAll('.code-block code').forEach(code => {
-    if (code.dataset.readableDone === '1') return;
-    const text = code.textContent;
-    if (!text.includes('<!doctype html>')) code.textContent = readableJavaScript(text);
-    code.dataset.readableDone = '1';
+function formatExamples() {
+  document.querySelectorAll('.code-block code').forEach(code => {
+    const next = prettyCode(code.textContent);
+    if (next && next !== code.textContent.trim()) code.textContent = next;
   });
-  root.querySelectorAll('.editor-fallback').forEach(area => {
-    if (area.dataset.readableDone === '1') return;
-    area.value = readableJavaScript(area.value);
-    area.dataset.readableDone = '1';
+
+  document.querySelectorAll('.editor-fallback').forEach(area => {
+    const next = prettyCode(area.value);
+    if (next && next !== area.value.trim()) area.value = next;
   });
+
+  if (globalThis.monaco && globalThis.monaco.editor) {
+    globalThis.monaco.editor.getModels().forEach(model => {
+      if (model.__prettyDone) return;
+      const next = prettyCode(model.getValue());
+      if (next && next !== model.getValue().trim()) model.setValue(next);
+      model.__prettyDone = true;
+    });
+  }
 }
 
-const observer = new MutationObserver(() => formatVisibleExamples());
-observer.observe(document.documentElement, { childList: true, subtree: true });
-document.addEventListener('DOMContentLoaded', () => formatVisibleExamples());
-setInterval(() => formatVisibleExamples(), 700);
+new MutationObserver(formatExamples).observe(document.documentElement, { childList: true, subtree: true });
+document.addEventListener('DOMContentLoaded', formatExamples);
+setInterval(formatExamples, 600);
