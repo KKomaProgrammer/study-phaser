@@ -45,6 +45,12 @@ function routeTo(path) {
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
+function isCorrectionButton(button) {
+  const text = button.textContent || '';
+  const small = button.querySelector('small')?.textContent || '';
+  return button.classList.contains('did-you-mean') || small.includes('맞춤법') || text.includes('검색어를 찾으셨나요');
+}
+
 function isVeryCloseToDoc(query, doc) {
   if (!doc || !query || query.trim().startsWith('#')) return false;
   const q = normalizeText(query);
@@ -72,11 +78,11 @@ async function bestDocForQuery(query) {
 
 async function handleQuerySuggestion(button) {
   const query = button.dataset.querySuggestion || button.textContent || '';
-  const isCorrection = button.querySelector('small')?.textContent?.includes('맞춤법') || button.textContent.includes('검색어를 찾으셨나요');
+  const isCorrection = isCorrectionButton(button);
   closeSearchUi();
   const topDoc = await bestDocForQuery(query).catch(() => null);
-  if (isCorrection && topDoc) {
-    routeTo('/' + encodeURIComponent(topDoc.slug));
+  if (isCorrection) {
+    if (topDoc && topDoc.slug) routeTo('/' + encodeURIComponent(topDoc.slug));
     return;
   }
   if (isVeryCloseToDoc(query, topDoc)) {
