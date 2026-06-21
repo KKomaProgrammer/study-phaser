@@ -5,27 +5,28 @@ function isCorrectionSuggestion(element) {
   return element.classList.contains('did-you-mean') || label.includes('맞춤법') || text.includes('이 검색어를 찾으셨나요') || text.includes('검색어를 찾으셨나요');
 }
 
-function closeCorrectionSearchUi() {
-  document.querySelectorAll('.suggestion-popover,.mini-suggestion-popover').forEach(box => {
-    box.hidden = true;
-    box.innerHTML = '';
-  });
-  document.querySelectorAll('#searchInput,#miniInput').forEach(input => input.blur());
-  document.querySelectorAll('.search-panel').forEach(panel => panel.classList.remove('is-focused'));
+function queryFromCorrection(element) {
+  return (element?.dataset?.querySuggestion || element?.querySelector('strong')?.textContent || element?.textContent || '').trim();
 }
 
-function moveCorrectionToDocument(slug) {
-  const path = '/' + encodeURIComponent(slug);
-  if (location.pathname !== path) history.pushState(null, '', path);
+function setInputAndSearch(input, query) {
+  if (!input || !query) return false;
+  input.value = query;
+  input.focus();
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  return true;
+}
+
+function applyCorrectionSearch(query) {
+  const mainInput = document.getElementById('searchInput');
+  if (setInputAndSearch(mainInput, query)) return;
+
+  const miniInput = document.getElementById('miniInput');
+  if (setInputAndSearch(miniInput, query)) return;
+
+  const path = '/?q=' + encodeURIComponent(query);
+  if (location.pathname + location.search !== path) history.pushState(null, '', path);
   window.dispatchEvent(new PopStateEvent('popstate'));
-}
-
-async function openTopDocumentForCorrection(query) {
-  closeCorrectionSearchUi();
-  const res = await fetch('/api/search?q=' + encodeURIComponent(query));
-  const data = await res.json();
-  const first = (data.results || [])[0];
-  if (first && first.slug) moveCorrectionToDocument(first.slug);
 }
 
 document.addEventListener('pointerdown', event => {
@@ -33,6 +34,7 @@ document.addEventListener('pointerdown', event => {
   if (!isCorrectionSuggestion(box)) return;
   event.preventDefault();
   event.stopPropagation();
+  event.stopImmediatePropagation();
 }, true);
 
 document.addEventListener('click', event => {
@@ -41,5 +43,5 @@ document.addEventListener('click', event => {
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation();
-  openTopDocumentForCorrection(box.dataset.querySuggestion || box.textContent || '');
+  applyCorrectionSearch(queryFromCorrection(box));
 }, true);
