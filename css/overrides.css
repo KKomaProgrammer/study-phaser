@@ -23,14 +23,14 @@
 }
 
 .search-main-row {
-  height: 58px !important;
-  min-height: 58px !important;
+  height: 66px !important;
+  min-height: 66px !important;
   padding: 7px 8px 7px 18px !important;
   border-radius: 999px !important;
   border: 0 !important;
   background: #ffffff !important;
   box-shadow: none !important;
-  transition: border-radius .28s ease, padding .28s ease;
+  transition: height .28s ease, min-height .28s ease, border-radius .28s ease, padding .28s ease;
 }
 
 .search-panel.is-focused .search-main-row {
@@ -173,7 +173,12 @@
     max-width: 100% !important;
   }
 
-  .search-main-row,
+  .search-main-row {
+    height: 66px !important;
+    min-height: 66px !important;
+    padding: 6px 7px 6px 14px !important;
+  }
+
   .search-panel.is-focused .search-main-row {
     height: 54px !important;
     min-height: 54px !important;
