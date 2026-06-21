@@ -1,3 +1,5 @@
+import './correction-top-doc.js';
+
 function isHtml(text) {
   return /^\s*<!doctype html>/i.test(text || '') || /^\s*<html[\s>]/i.test(text || '');
 }
