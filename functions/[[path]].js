@@ -1,13 +1,9 @@
-export async function onRequest({ request, env }) {
+export async function onRequest({ request, env, next }) {
   const url = new URL(request.url);
+  const response = await next();
 
-  if (url.pathname.startsWith('/api/')) {
-    return env.ASSETS.fetch(request);
-  }
-
-  const assetResponse = await env.ASSETS.fetch(request);
-  if (assetResponse.status !== 404) {
-    return assetResponse;
+  if (url.pathname.startsWith('/api/') || response.status !== 404) {
+    return response;
   }
 
   const indexUrl = new URL('/index.html', url.origin);
