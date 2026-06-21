@@ -17,11 +17,12 @@ function setInputAndSearch(input, query) {
   return true;
 }
 
-function setInputOnly(input, query) {
+function setInputAndRefreshWithoutFocus(input, query) {
   if (!input || !query) return false;
   input.value = query;
   input.blur();
   document.querySelectorAll('.search-panel').forEach(panel => panel.classList.remove('is-focused'));
+  input.dispatchEvent(new Event('input', { bubbles: true }));
   return true;
 }
 
@@ -37,12 +38,13 @@ function applyCorrectionSearch(query) {
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
-function applyResultCorrectionOnly(query) {
+function applyResultCorrectionAndRefresh(box, query) {
+  box.remove();
   const mainInput = document.getElementById('searchInput');
-  if (setInputOnly(mainInput, query)) return;
+  if (setInputAndRefreshWithoutFocus(mainInput, query)) return;
 
   const miniInput = document.getElementById('miniInput');
-  if (setInputOnly(miniInput, query)) return;
+  if (setInputAndRefreshWithoutFocus(miniInput, query)) return;
 }
 
 document.addEventListener('pointerdown', event => {
@@ -61,7 +63,7 @@ document.addEventListener('click', event => {
   event.stopImmediatePropagation();
   const query = queryFromCorrection(box);
   if (box.classList.contains('did-you-mean')) {
-    applyResultCorrectionOnly(query);
+    applyResultCorrectionAndRefresh(box, query);
     return;
   }
   applyCorrectionSearch(query);
