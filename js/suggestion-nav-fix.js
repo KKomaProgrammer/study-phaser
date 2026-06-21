@@ -28,6 +28,18 @@ function hideSuggestionBoxes() {
   });
 }
 
+function blurSearchFocus() {
+  const active = document.activeElement;
+  if (active && typeof active.blur === 'function') active.blur();
+  document.querySelectorAll('#searchInput,#miniInput').forEach(input => input.blur());
+  document.querySelectorAll('.search-panel').forEach(panel => panel.classList.remove('is-focused'));
+}
+
+function closeSearchUi() {
+  hideSuggestionBoxes();
+  blurSearchFocus();
+}
+
 function routeTo(path) {
   if (location.pathname + location.search !== path) history.pushState(null, '', path);
   window.dispatchEvent(new PopStateEvent('popstate'));
@@ -60,7 +72,7 @@ async function bestDocForQuery(query) {
 
 async function handleQuerySuggestion(button) {
   const query = button.dataset.querySuggestion || button.textContent || '';
-  hideSuggestionBoxes();
+  closeSearchUi();
   const topDoc = await bestDocForQuery(query).catch(() => null);
   if (isVeryCloseToDoc(query, topDoc)) {
     routeTo('/' + encodeURIComponent(topDoc.slug));
@@ -87,7 +99,7 @@ document.addEventListener('click', event => {
   if (docButton) {
     event.preventDefault();
     event.stopPropagation();
-    hideSuggestionBoxes();
+    closeSearchUi();
     const slug = docButton.dataset.suggestionDoc;
     if (slug) routeTo('/' + encodeURIComponent(slug));
     return;
@@ -102,9 +114,9 @@ document.addEventListener('click', event => {
 }, true);
 
 document.addEventListener('submit', event => {
-  if (event.target && event.target.matches('#searchForm,#miniSearch')) hideSuggestionBoxes();
+  if (event.target && event.target.matches('#searchForm,#miniSearch')) closeSearchUi();
 }, true);
 
 document.addEventListener('click', event => {
-  if (event.target.closest('#searchForm .primary-button,#miniSearch .primary-button')) hideSuggestionBoxes();
+  if (event.target.closest('#searchForm .primary-button,#miniSearch .primary-button')) closeSearchUi();
 }, true);
