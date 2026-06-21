@@ -1,4 +1,5 @@
 import './correction-top-doc.js';
+import './course-back-fix.js';
 
 function isHtml(text) {
   return /^\s*<!doctype html>/i.test(text || '') || /^\s*<html[\s>]/i.test(text || '');
