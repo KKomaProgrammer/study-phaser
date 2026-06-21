@@ -1,0 +1,4 @@
+/popular /404.html 200
+/course /404.html 200
+/course/* /404.html 200
+/:slug /404.html 200
