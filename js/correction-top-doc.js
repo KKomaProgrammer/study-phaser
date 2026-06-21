@@ -17,6 +17,14 @@ function setInputAndSearch(input, query) {
   return true;
 }
 
+function setInputOnly(input, query) {
+  if (!input || !query) return false;
+  input.value = query;
+  input.blur();
+  document.querySelectorAll('.search-panel').forEach(panel => panel.classList.remove('is-focused'));
+  return true;
+}
+
 function applyCorrectionSearch(query) {
   const mainInput = document.getElementById('searchInput');
   if (setInputAndSearch(mainInput, query)) return;
@@ -27,6 +35,14 @@ function applyCorrectionSearch(query) {
   const path = '/?q=' + encodeURIComponent(query);
   if (location.pathname + location.search !== path) history.pushState(null, '', path);
   window.dispatchEvent(new PopStateEvent('popstate'));
+}
+
+function applyResultCorrectionOnly(query) {
+  const mainInput = document.getElementById('searchInput');
+  if (setInputOnly(mainInput, query)) return;
+
+  const miniInput = document.getElementById('miniInput');
+  if (setInputOnly(miniInput, query)) return;
 }
 
 document.addEventListener('pointerdown', event => {
@@ -43,5 +59,10 @@ document.addEventListener('click', event => {
   event.preventDefault();
   event.stopPropagation();
   event.stopImmediatePropagation();
-  applyCorrectionSearch(queryFromCorrection(box));
+  const query = queryFromCorrection(box);
+  if (box.classList.contains('did-you-mean')) {
+    applyResultCorrectionOnly(query);
+    return;
+  }
+  applyCorrectionSearch(query);
 }, true);
