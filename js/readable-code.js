@@ -4,7 +4,7 @@ import './course-back-fix.js';
 function isHtml(text) {
   return /^\s*<!doctype html>/i.test(text || '') || /^\s*<html[\s>]/i.test(text || '');
 }
-
+//
 function prettyCode(text) {
   text = String(text || '').trim();
   if (!text || isHtml(text)) return text;
