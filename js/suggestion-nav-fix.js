@@ -72,8 +72,13 @@ async function bestDocForQuery(query) {
 
 async function handleQuerySuggestion(button) {
   const query = button.dataset.querySuggestion || button.textContent || '';
+  const isCorrection = button.querySelector('small')?.textContent?.includes('맞춤법') || button.textContent.includes('검색어를 찾으셨나요');
   closeSearchUi();
   const topDoc = await bestDocForQuery(query).catch(() => null);
+  if (isCorrection && topDoc) {
+    routeTo('/' + encodeURIComponent(topDoc.slug));
+    return;
+  }
   if (isVeryCloseToDoc(query, topDoc)) {
     routeTo('/' + encodeURIComponent(topDoc.slug));
     return;
