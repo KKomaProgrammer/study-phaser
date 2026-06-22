@@ -172,6 +172,45 @@
   font-feature-settings: "liga" 0;
 }
 
+.boot-screen,
+.loading-screen {
+  min-height: 100vh !important;
+  width: 100% !important;
+  display: grid !important;
+  place-items: center !important;
+  align-content: center !important;
+  justify-items: center !important;
+  gap: 14px !important;
+  padding: 24px !important;
+  text-align: center !important;
+  color: var(--muted) !important;
+  background: transparent !important;
+}
+
+.boot-screen .brand-orb,
+.loading-screen .brand-orb {
+  margin: 0 auto !important;
+}
+
+.view:not(.view-exit) {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.view-ready {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.view-exit {
+  pointer-events: none !important;
+}
+
+.search-panel:not(.is-focused) .category-board {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 @media (max-width: 640px) {
   .search-panel,
   .search-panel.is-focused {
