@@ -1,5 +1,6 @@
 import './correction-top-doc.js';
 import './course-back-fix.js';
+import './stability-fix.js';
 
 function isHtml(text) {
   return /^\s*<!doctype html>/i.test(text || '') || /^\s*<html[\s>]/i.test(text || '');
@@ -18,45 +19,37 @@ function prettyCode(text) {
     .replace(/\)\s*function/g, ')\nfunction')
     .replace(/\)\s*if/g, ')\nif')
     .replace(/\)\s*for/g, ')\nfor')
-    .replace(/\)\s*while/g, ')\nwhile')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
+    .replace(/\)\s*const/g, ')\nconst')
+    .replace(/\)\s*let/g, ')\nlet')
+    .replace(/\)\s*var/g, ')\nvar')
+    .replace(/\{\n\s*\}/g, '{}')
+    .replace(/\n{3,}/g, '\n\n');
 
   const lines = out.split('\n');
   let depth = 0;
-  out = lines.map(raw => {
-    let line = raw.trim();
-    if (!line) return '';
-    if (line.startsWith('}')) depth = Math.max(0, depth - 1);
-    const indented = '  '.repeat(depth) + line;
-    if (line.endsWith('{')) depth++;
-    return indented;
+  return lines.map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return '';
+    if (/^[}\])]/.test(trimmed)) depth = Math.max(0, depth - 1);
+    const padded = '  '.repeat(depth) + trimmed;
+    const opens = (trimmed.match(/[\{\[\(]/g) || []).length;
+    const closes = (trimmed.match(/[\}\]\)]/g) || []).length;
+    depth = Math.max(0, depth + opens - closes);
+    return padded;
   }).join('\n');
-
-  return out.replace(/\n{3,}/g, '\n\n').trim();
 }
 
-function formatExamples() {
-  document.querySelectorAll('.code-block code').forEach(code => {
-    const next = prettyCode(code.textContent);
-    if (next && next !== code.textContent.trim()) code.textContent = next;
+function beautifyCodeBlocks(root = document) {
+  root.querySelectorAll('pre.code-block code, textarea.editor-fallback').forEach(el => {
+    if (el.dataset.prettyDone) return;
+    const value = el.tagName === 'TEXTAREA' ? el.value : el.textContent;
+    const pretty = prettyCode(value);
+    if (el.tagName === 'TEXTAREA') el.value = pretty;
+    else el.textContent = pretty;
+    el.dataset.prettyDone = '1';
   });
-
-  document.querySelectorAll('.editor-fallback').forEach(area => {
-    const next = prettyCode(area.value);
-    if (next && next !== area.value.trim()) area.value = next;
-  });
-
-  if (globalThis.monaco && globalThis.monaco.editor) {
-    globalThis.monaco.editor.getModels().forEach(model => {
-      if (model.__prettyDone) return;
-      const next = prettyCode(model.getValue());
-      if (next && next !== model.getValue().trim()) model.setValue(next);
-      model.__prettyDone = true;
-    });
-  }
 }
 
-new MutationObserver(formatExamples).observe(document.documentElement, { childList: true, subtree: true });
-document.addEventListener('DOMContentLoaded', formatExamples);
-setInterval(formatExamples, 600);
+new MutationObserver(() => beautifyCodeBlocks()).observe(document.documentElement, { childList: true, subtree: true });
+document.addEventListener('DOMContentLoaded', () => beautifyCodeBlocks());
+setTimeout(() => beautifyCodeBlocks(), 500);
