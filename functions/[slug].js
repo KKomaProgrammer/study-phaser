@@ -12,7 +12,7 @@ function fallbackHtml() {
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
 </head>
 <body>
-  <div id="app"><main class="loading-screen"><div class="brand-orb">P</div><p>Phaser 문법을 불러오는 중...</p></main></div>
+  <div id="app" class="app-root"><main class="boot-screen"><div class="brand-orb">P</div><p>Phaser 문법 검색기를 불러오는 중입니다</p></main></div>
   <script type="module" src="/js/app.js"></script>
   <script type="module" src="/js/readable-code.js"></script>
   <script type="module" src="/js/suggestion-nav-fix.js"></script>
@@ -22,7 +22,7 @@ function fallbackHtml() {
 
 async function spaShell(request, env) {
   const origin = new URL(request.url).origin;
-  const url = new URL('/404.html', origin);
+  const url = new URL('/index.html', origin);
   let html = '';
 
   try {
