@@ -1,44 +1,47 @@
-import './correction-top-doc.js?v=20260627_4';
-import './course-back-fix.js?v=20260627_4';
-import './stability-fix.js?v=20260627_4';
-import './doc-load-fix.js?v=20260627_4';
+import './correction-top-doc.js?v=20260627_5';
+import './course-back-fix.js?v=20260627_5';
+import './stability-fix.js?v=20260627_5';
+import './doc-load-fix.js?v=20260627_5';
 
 function isHtml(text) {
   return /^\s*<!doctype html>/i.test(text || '') || /^\s*<html[\s>]/i.test(text || '');
+}
+
+function normalizeCodeBreaks(text) {
+  return String(text || '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .replace(/\t/g, '  ')
+    .replace(/[ \f\v]+/g, ' ')
+    .replace(/\s*\{\s*/g, ' {\n')
+    .replace(/\s*\}\s*/g, '\n}\n')
+    .replace(/;[ \t]*/g, ';\n')
+    .replace(/\)[ \t]*(function|if|for|while|const|let|var)\b/g, ')\n$1')
+    .replace(/\n[ \t]+/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 function prettyCode(text) {
   text = String(text || '').trim();
   if (!text || isHtml(text)) return text;
 
-  let out = text
-    .replace(/\r\n/g, '\n')
-    .replace(/\r/g, '\n')
-    .replace(/\t/g, '  ')
-    .replace(/\s+/g, ' ')
-    .replace(/\s*\{\s*/g, ' {\n')
-    .replace(/\s*\}\s*/g, '\n}\n')
-    .replace(/;\s*/g, ';\n')
-    .replace(/,\s*/g, ',\n')
-    .replace(/\)\s*function/g, ')\nfunction')
-    .replace(/\)\s*if/g, ')\nif')
-    .replace(/\)\s*for/g, ')\nfor')
-    .replace(/\)\s*const/g, ')\nconst')
-    .replace(/\)\s*let/g, ')\nlet')
-    .replace(/\)\s*var/g, ')\nvar')
-    .replace(/\{\n\s*\}/g, '{}')
-    .replace(/\n{3,}/g, '\n\n');
-
+  const out = normalizeCodeBreaks(text);
   const lines = out.split('\n');
   let depth = 0;
+
   return lines.map(line => {
     const trimmed = line.trim();
     if (!trimmed) return '';
+
     if (/^[}\])]/.test(trimmed)) depth = Math.max(0, depth - 1);
     const padded = '  '.repeat(depth) + trimmed;
-    const opens = (trimmed.match(/[\{\[\(]/g) || []).length;
-    const closes = (trimmed.match(/[\}\]\)]/g) || []).length;
+
+    const withoutStrings = trimmed.replace(/(['"`])(?:\\.|(?!\1).)*\1/g, '');
+    const opens = (withoutStrings.match(/[\{\[\(]/g) || []).length;
+    const closes = (withoutStrings.match(/[\}\]\)]/g) || []).length;
     depth = Math.max(0, depth + opens - closes);
+
     return padded;
   }).join('\n');
 }
@@ -57,13 +60,14 @@ function beautifyCodeBlocks(root = document, force = false) {
 function applyReadability(button) {
   beautifyCodeBlocks(document, true);
   document.querySelectorAll('.code-block, .output-pre, .editor-fallback').forEach(el => {
-    el.style.whiteSpace = 'pre';
+    el.style.whiteSpace = 'pre-wrap';
     el.style.tabSize = '2';
     el.style.lineHeight = '1.62';
   });
   document.querySelectorAll('.doc-section p, .doc-section li').forEach(el => {
     el.style.lineHeight = '1.78';
     el.style.wordBreak = 'keep-all';
+    el.style.overflowWrap = 'anywhere';
   });
   if (button) {
     const old = button.textContent;
