@@ -1,7 +1,7 @@
-import './correction-top-doc.js';
-import './course-back-fix.js';
-import './stability-fix.js';
-import './doc-load-fix.js';
+import './correction-top-doc.js?v=20260627_3';
+import './course-back-fix.js?v=20260627_3';
+import './stability-fix.js?v=20260627_3';
+import './doc-load-fix.js?v=20260627_3';
 
 function isHtml(text) {
   return /^\s*<!doctype html>/i.test(text || '') || /^\s*<html[\s>]/i.test(text || '');
