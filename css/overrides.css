@@ -152,13 +152,13 @@
 .output-pre,
 .editor-fallback {
   tab-size: 2;
-  white-space: pre !important;
+  white-space: pre-wrap !important;
   line-height: 1.62;
 }
 
 .code-block code {
   display: block;
-  white-space: pre !important;
+  white-space: pre-wrap !important;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 }
 
@@ -192,23 +192,70 @@
   margin: 0 auto !important;
 }
 
-.view:not(.view-exit) {
-  opacity: 1 !important;
-  transform: none !important;
+.view {
+  animation: pageEnter .22s ease both;
+  will-change: opacity, transform;
 }
 
+.view:not(.view-exit),
 .view-ready {
   opacity: 1 !important;
   transform: none !important;
 }
 
 .view-exit {
+  opacity: 0 !important;
+  transform: translateY(8px) scale(.992) !important;
+  filter: blur(2px);
   pointer-events: none !important;
+  transition: opacity .16s ease, transform .16s ease, filter .16s ease !important;
+}
+
+.top-nav,
+.page-content,
+.site-sidebar {
+  animation: softPop .24s ease both;
+}
+
+.page-content {
+  animation-delay: .025s;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(.995);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes softPop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .search-panel:not(.is-focused) .category-board {
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view,
+  .top-nav,
+  .page-content,
+  .site-sidebar {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 @media (max-width: 640px) {
