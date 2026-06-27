@@ -1,6 +1,8 @@
+import './doc-load-fix.js?v=20260627_7';
+
 const normalizeText = value => String(value || '')
   .toLowerCase()
-  .replace(/[._()\/:'"#\s-]/g, '')
+  .replace(/[._()\/:\'"#\s-]/g, '')
   .trim();
 
 function distance(a, b) {
