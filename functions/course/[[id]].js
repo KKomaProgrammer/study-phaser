@@ -13,7 +13,7 @@ function fallbackHtml() {
 <body>
   <div id="app" class="app-root"><main class="boot-screen"><div class="brand-orb">P</div><p>Phaser 문법 검색기를 불러오는 중입니다</p></main></div>
   <script type="module" src="/js/app.js?v=20260627_3"></script>
-  <script type="module" src="/js/readable-code.js?v=20260627_3"></script>
+  <script type="module" src="/js/readable-code.js?v=20260627_4"></script>
   <script type="module" src="/js/suggestion-nav-fix.js?v=20260627_3"></script>
 </body>
 </html>`;
